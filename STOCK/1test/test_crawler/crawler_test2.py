@@ -5,6 +5,54 @@ import re
 
 
 
+
+
+class Main:
+    def __init__(self):
+        self.url = "https://finance.naver.com/item/main.nhn?code="
+        self.data = [][]
+              
+
+    def get_price_one(self, tag):
+        urltag = self.url + tag
+        html = requests.get(urltag)
+        soup = BeautifulSoup(html.content, 'html.parser')
+        html1 = soup.find('div',class_='today')
+        html2 = html1.find('p',class_='no_today')
+        price = html2.find_all('em',class_='no_down')
+        price = html2.find_all('span',class_='blind')
+        result_price = re.sub(r'[^0-9]', '', str(price))
+        print("price : ",result_price)
+        return result_price
+    
+    def get_amount_one(self,tag):
+        urltag = self.url + tag
+        response = requests.get(urltag)
+        html = response.text
+        soup = BeautifulSoup(html,'html.parser')
+        amount = soup.select_one('#tab_con1 > div.first > table > tr:nth-child(4) > td > em')
+        rsult = amount.get_text().replace(',','')
+        print("amount : ",rsult)
+        return rsult
+
+    def get_name(self,tag):
+        urltag = self.url + tag
+        response = requests.get(urltag)
+        html = response.text
+        soup = BeautifulSoup(html,'html.parser')
+        amount = soup.select_one('#middle > div.h_company > div.wrap_company > h2 > a')
+        rsult = amount.get_text()
+        print("name : ",rsult)
+        return rsult
+
+    def update_price(self):
+        
+
+    
+
+        
+
+
 class Main:
     def __init__(self):
         self.ls_tag=[]

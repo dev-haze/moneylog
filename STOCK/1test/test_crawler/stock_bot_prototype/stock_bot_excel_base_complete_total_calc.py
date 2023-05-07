@@ -1,3 +1,7 @@
+from openpyxl import load_workbook
+from openpyxl.utils.dataframe import dataframe_to_rows
+
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -5,14 +9,40 @@ import re
 
 
 
+class saveNload:
+    def __init__(self):
+        pass
+
+    def load(self):
+        wb = load_workbook('result.xlsx')
+        ws = wb['Sheet1']
+        f = pd.DataFrame(ws.values)
+        return f
+    
+    def save(self,df):
+        wb = openpyxl.Workbook()
+        # 시트 선택
+        ws = wb.active
+        # 시트에 데이터프레임 삽입
+        for r in dataframe_to_rows(df, index=False, header=True):
+            ws.append(r)
+        # 엑셀 파일에 저장
+        wb.save("./result.xlsx")
+        pass
+
 class Main:
     def __init__(self):
         self.ls_tag=[]
         self.ls_price=[]
         self.url = "https://finance.naver.com/item/main.nhn?code="
 
-        self.ls_tag.append('005930')
-
+        #태그 가져오기
+        self.df_m = saveNload()
+        self.df = self.df_m.load()
+        self.ls_tag = self.df.iloc[:,0]
+        print(self.ls_tag)
+        del self.ls_tag[0]
+                
     def get_price_one(self,tag):
         urltag = self.url + tag
         html = requests.get(urltag)
@@ -53,30 +83,34 @@ class Main:
         rsult = amount.get_text()
         print("name : ",rsult)
         return rsult
-
-    def show(self):
+    
+    def update_price(self):
         count = 1
         for each in self.ls_tag:
             code = str(each)
             for i in range(6-len(code)):
                 code = "0"+code
-
-            name = self.get_name(code)
             price = self.get_price_one(code)
-            amount = self.get_amount_one(code)
+            self.df.loc[count,2] = int(price)
 
-            total = name,price,amount;
+            amount = self.get_amount_one(code)
+            self.df.loc[count,3] = int(amount)
+
+            total = self.df.loc[count,2] * self.df.loc[count,3]
             self.df.loc[count,4] = total
             print("total:",total)
 
-                   
+            name = self.get_name(code)
+            self.df.loc[count,1] = name
             count+=1
-            
-            print(price,' ',amount,' ',total,' ',name,' ')
 
-    
+        print(self.df)
 
-   
+        
+        self.df.to_excel("result.xlsx",header=None,index=False)
+        
+
+
 m = Main()
 rsult = m.get_price_one('005930')
-m.show()
+rsult = m.update_price()
