@@ -16,12 +16,11 @@ class Main:
         col_name = df_krx.columns.to_list()
         print(col_name)
 
+        self.krx = df_krx.to_numpy()
 
-
-        #print(names(df_krx))
-              
-        krx = df_krx.to_numpy()
-
+        print('name',self.krx[0][2])
+        print('amount',self.krx[0][13])
+        
         #print(krx[0])
         
 
@@ -78,7 +77,7 @@ class Main:
     def show(self):
         for y in self.data:
             for each in y:
-                #print(each)
+                print(each)
                 pass
 
         

@@ -46,7 +46,7 @@ class Main:
         return rsult
 
     def update_price(self):
-        
+        pass
 
     
 

@@ -65,7 +65,7 @@ class Main:
             price = self.get_price_one(code)
             amount = self.get_amount_one(code)
 
-            total = name,price,amount;
+            total = name,price,amount
             self.df.loc[count,4] = total
             print("total:",total)
 
